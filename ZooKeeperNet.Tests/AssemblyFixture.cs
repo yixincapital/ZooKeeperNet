@@ -21,9 +21,9 @@ namespace ZooKeeperNet.Tests
     using System.Diagnostics;
     using System.IO;
     using System.Threading;
-    using NUnit.Framework;
+   
 
-    [SetUpFixture]
+
     public class AssemblyFixture
     {
         private IDisposable server;

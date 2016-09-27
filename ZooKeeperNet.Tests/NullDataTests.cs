@@ -15,15 +15,16 @@
  *  limitations under the License.
  *
  */
+
+using Xunit;
+
 namespace ZooKeeperNet.Tests
 {
     using System;
-    using NUnit.Framework;
-
-    [TestFixture]
+ 
     public class NullDataTests : AbstractZooKeeperTests
     {
-        [Test]
+        [Fact]
         public void testNullData()
         {
             string path = "/" + Guid.NewGuid() + "SIZE";
@@ -32,7 +33,7 @@ namespace ZooKeeperNet.Tests
                 zk.Create(path, null, Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent);
                 // try sync zk exists 
                 var stat = zk.Exists(path, false);
-                Assert.AreEqual(0, stat.DataLength);
+                Assert.Equal(0, stat.DataLength);
             }
         }
     }

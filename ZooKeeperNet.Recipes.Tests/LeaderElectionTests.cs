@@ -18,20 +18,19 @@
 
 using System;
 using System.Threading;
-using NUnit.Framework;
 using ZooKeeperNet;
 using ZooKeeperNet.Recipes;
 using ZooKeeperNet.Tests;
 using log4net;
+using Xunit;
 
 namespace ZooKeeperNetRecipes.Tests {
-	[TestFixture]
 	public class LeaderElectionTests : AbstractZooKeeperTests {
 		private static ILog LOG = LogManager.GetLogger(typeof (LeaderElectionTests));
 		private ZooKeeper[] clients;
 
-		[TearDown]
-		public void Teardown() {
+         void Dispose()
+        {
 			foreach (var zk in clients)
 				zk.Dispose();
 		}
@@ -50,7 +49,7 @@ namespace ZooKeeperNetRecipes.Tests {
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void testElection() {
 			String dir = "/test";
 			int num_clients = 10;
@@ -68,10 +67,10 @@ namespace ZooKeeperNetRecipes.Tests {
 				}
 				elections[i].Close();
 			}
-			Assert.Pass();
+			Assert.True(true);
 		}
 
-		[Test]
+		[Fact]
 		public void testNode4DoesNotBecomeLeaderWhenNonLeader3Closes()
 		{
 			var dir = "/test";
@@ -92,10 +91,10 @@ namespace ZooKeeperNetRecipes.Tests {
 			elections[2].Close();
 			// First one should still be leader
 			Thread.Sleep(3000);
-			Assert.AreEqual(1, leaderWatchers[0].Leader);
-			Assert.AreEqual(0, leaderWatchers[1].Leader);
-			Assert.AreEqual(0, leaderWatchers[2].Leader);
-			Assert.AreEqual(0, leaderWatchers[3].Leader);
+			Assert.Equal(1, leaderWatchers[0].Leader);
+            Assert.Equal(0, leaderWatchers[1].Leader);
+            Assert.Equal(0, leaderWatchers[2].Leader);
+            Assert.Equal(0, leaderWatchers[3].Leader);
 			elections[0].Close();
 			elections[1].Close();
 			elections[3].Close();

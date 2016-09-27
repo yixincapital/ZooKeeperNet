@@ -1,14 +1,14 @@
-﻿namespace ZooKeeperNetRecipes.Tests
+﻿using Xunit;
+
+namespace ZooKeeperNetRecipes.Tests
 {
     using System;
     using System.Threading;
     using log4net;
-    using NUnit.Framework;
     using ZooKeeperNet;
     using ZooKeeperNet.Recipes;
     using ZooKeeperNet.Tests;
 
-    [TestFixture]
     public class WriteLockTests : AbstractZooKeeperTests
     {
         private static readonly ILog LOG = LogManager.GetLogger(typeof(WriteLockTests));
@@ -17,7 +17,7 @@
         protected String dir = "/" + Guid.NewGuid();
         protected WriteLock[] nodes;
 
-        [Test]
+        [Fact]
         public void testRun()
         {
             runTest(3);
@@ -99,8 +99,8 @@
             }
         }
 
-        [TearDown]
-        protected void tearDown()
+
+        protected void Dispose()
         {
             if (nodes != null)
             {

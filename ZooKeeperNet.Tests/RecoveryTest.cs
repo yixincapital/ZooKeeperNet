@@ -18,8 +18,8 @@
 using System;
 using System.Threading;
 using log4net;
-using NUnit.Framework;
 using Org.Apache.Zookeeper.Data;
+using Xunit;
 
 namespace ZooKeeperNet.Tests
 {
@@ -30,7 +30,7 @@ namespace ZooKeeperNet.Tests
         private int processCount;
         private readonly string testPath = "/unittests/recoverytests/" + Guid.NewGuid();
 
-        [Test, Explicit]
+     [Fact]
         public void ReconnectsWhenDisconnected()
         {
             using (CancellationTokenSource token = new CancellationTokenSource())
@@ -51,8 +51,8 @@ namespace ZooKeeperNet.Tests
                 LOG.Error("Waiting for thread to stop..." + processCount);
                 thread.Join();
                 if (thread.IsAlive)
-                    Assert.Fail("Thread still alive");
-                Assert.AreEqual(setDataCount, processCount, "setDataCount == processCount");
+                    Assert.True(false,"Thread still alive");
+                Assert.Equal(setDataCount, processCount);
                 LOG.Error("Finished:" + setDataCount + ":" + processCount);
             }
         }

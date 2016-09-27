@@ -1,16 +1,16 @@
-﻿namespace ZooKeeperNetRecipes.Tests
+﻿using Xunit;
+
+namespace ZooKeeperNetRecipes.Tests
 {
     using System;
     using System.Linq;
-    using NUnit.Framework;
     using ZooKeeperNet.Recipes;
     using ZooKeeperNet;
     using ZooKeeperNet.Tests;
 
-    [TestFixture]
     public class ZNodeNameTests : AbstractZooKeeperTests
     {
-        [Test]
+        [Fact]
         public void testDeleteAllNodeExceptPraweda()
         {
             using (var zk = CreateClient())
@@ -35,15 +35,15 @@
                     zk.Delete(path, -1);
             }
         }
-        [Test]
+        [Fact]
         public void testOrderWithSamePrefix()
         {
             String[] names = { "x-3", "x-5", "x-11", "x-1" };
             String[] expected = { "x-1", "x-3", "x-5", "x-11" };
             AssertOrderedNodeNames(names, expected);
         }
-        
-        [Test]
+
+        [Fact]
         public void testOrderWithDifferentPrefixes()
         {
             String[] names = { "r-3", "r-2", "r-1", "w-2", "w-1" };
@@ -53,7 +53,7 @@
 
         protected void AssertOrderedNodeNames(String[] names, String[] expected)
         {
-            Assert.AreEqual(names.Length, expected.Length, "The two arrays should be the same size!");
+            Assert.Equal(names.Length, expected.Length); //"The two arrays should be the same size!"
             var nodeNames = new SortedSet<ZNodeName>();
             foreach (string name in names)
             {
@@ -63,7 +63,7 @@
             int index = 0;
             foreach (string name in nodeNames.Select(nodeName => nodeName.Name))
             {
-                Assert.AreEqual(name, expected[index++]);
+                Assert.Equal(name, expected[index++]);
             }
         }
     }

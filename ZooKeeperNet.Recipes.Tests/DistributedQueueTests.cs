@@ -1,26 +1,26 @@
-﻿namespace ZooKeeperNetRecipes.Tests
+﻿using Xunit;
+
+namespace ZooKeeperNetRecipes.Tests
 {
     using System;
     using System.Text;
     using System.Threading;
-    using NUnit.Framework;
     using ZooKeeperNet;
     using ZooKeeperNet.Recipes;
     using ZooKeeperNet.Tests;
 
-    [TestFixture]
     public class DistributedQueueTests : AbstractZooKeeperTests
     {
         private ZooKeeper[] clients;
 
-        [TearDown]
-        public void Teardown()
+       
+         void Dispose()
         {
             foreach (var zk in clients)
                 zk.Dispose();
         }
 
-        [Test]
+        [Fact]
         public void testOffer1()
         {
             String dir = "/testOffer1" + Guid.NewGuid();
@@ -37,10 +37,10 @@
             queueHandles[0].Enqueue(Encoding.UTF8.GetBytes(testString));
 
             byte[] dequeuedBytes = queueHandles[0].Dequeue();
-            Assert.AreEqual(Encoding.UTF8.GetString(dequeuedBytes), testString);
+            Assert.Equal(Encoding.UTF8.GetString(dequeuedBytes), testString);
         }
 
-        [Test]
+        [Fact]
         public void testOffer2()
         {
             String dir = "/testOffer2" + Guid.NewGuid();
@@ -57,10 +57,10 @@
             queueHandles[0].Enqueue(Encoding.UTF8.GetBytes(testString));
 
             byte[] dequeuedBytes = queueHandles[1].Dequeue();
-            Assert.AreEqual(Encoding.UTF8.GetString(dequeuedBytes), testString);
+            Assert.Equal(Encoding.UTF8.GetString(dequeuedBytes), testString);
         }
 
-        [Test]
+        [Fact]
         public void testTake1()
         {
             String dir = "/testTake1" + Guid.NewGuid();
@@ -77,7 +77,7 @@
             queueHandles[0].Enqueue(testString.GetBytes());
 
             byte[] dequeuedBytes = queueHandles[0].Take();
-            Assert.AreEqual(Encoding.UTF8.GetString(dequeuedBytes), testString);
+            Assert.Equal(Encoding.UTF8.GetString(dequeuedBytes), testString);
             //for (int i = 0; i < clients.Length; i++)
             //{
             //    clients[i].Dispose();
@@ -85,7 +85,7 @@
 
         }
 
-        [Test]
+        [Fact]
         public void testRemove1()
         {
             String dir = "/testRemove1" + Guid.NewGuid();
@@ -107,7 +107,7 @@
             {
                 return;
             }
-            Assert.Fail();
+            Assert.True(false);
             //for (int i = 0; i < clients.Length; i++)
             //{
             //    clients[i].Dispose();
@@ -137,16 +137,16 @@
             {
                 data = queueHandles[1].Dequeue();
             }
-            Assert.AreEqual(testString + (m - 1), Encoding.UTF8.GetString(data));
+            Assert.Equal(testString + (m - 1), Encoding.UTF8.GetString(data));
         }
 
-        [Test]
+        [Fact]
         public void testRemove2()
         {
             createNremoveMtest("/testRemove2" + Guid.NewGuid(), 10, 2);
         }
 
-        [Test]
+        [Fact]
         public void testRemove3()
         {
             createNremoveMtest("/testRemove3" + Guid.NewGuid(), 1000, 1000);
@@ -176,38 +176,38 @@
             {
                 data = queueHandles[1].Dequeue();
             }
-            Assert.AreEqual(Encoding.UTF8.GetString(queueHandles[1].Peek()), testString + m);
+            Assert.Equal(Encoding.UTF8.GetString(queueHandles[1].Peek()), testString + m);
             for (int i = 0; i < clients.Length; i++)
             {
                 clients[i].Dispose();
             }
         }
 
-        [Test]
+        [Fact]
         public void testPeek1()
         {
             createNremoveMelementTest("/testElement1" + Guid.NewGuid(), 1, 0);
         }
 
-        [Test]
+        [Fact]
         public void testPeek2()
         {
             createNremoveMelementTest("/testElement2" + Guid.NewGuid(), 10, 2);
         }
 
-        [Test]
+        [Fact]
         public void testPeek3()
         {
             createNremoveMelementTest("/testElement3" + Guid.NewGuid(), 1000, 500);
         }
 
-        [Test]
+        [Fact]
         public void testPeek4()
         {
             createNremoveMelementTest("/testElement4" + Guid.NewGuid(), 1000, 1000 - 1);
         }
 
-        [Test]
+        [Fact]
         public void testTakeWait1()
         {
             String dir = "/testTakeWait1" + Guid.NewGuid();
@@ -258,10 +258,10 @@
             Assert.True(wait.WaitOne(3000), "Failed to take");
 
             Assert.True(takeResult[0] != null);
-            Assert.AreEqual(Encoding.UTF8.GetString(takeResult[0]), testString);
+            Assert.Equal(Encoding.UTF8.GetString(takeResult[0]), testString);
         }
 
-        [Test]
+        [Fact]
         public void testTakeWait2()
         {
             String dir = "/testTakeWait2" + Guid.NewGuid();
@@ -314,7 +314,7 @@
                 Assert.True(wait.WaitOne(3000), "Failed to take");
 
                 Assert.True(takeResult[0] != null);
-                Assert.AreEqual(threadTestString, Encoding.UTF8.GetString(takeResult[0]));
+                Assert.Equal(threadTestString, Encoding.UTF8.GetString(takeResult[0]));
             }
         }
 

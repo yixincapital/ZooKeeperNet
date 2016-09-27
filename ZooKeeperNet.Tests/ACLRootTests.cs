@@ -15,16 +15,17 @@
  *  limitations under the License.
  *
  */
-﻿namespace ZooKeeperNet.Tests
+
+using Xunit;
+
+namespace ZooKeeperNet.Tests
 {
     using System;
     using System.Text;
-    using NUnit.Framework;
-
-    [TestFixture]
+   
     public class ACLRootTests : AbstractZooKeeperTests
     {
-        [Test]
+        [Fact]
         public void testRootAcl()
         {
             using (var zk = CreateClient())
@@ -42,7 +43,7 @@
                 try
                 {
                     zk.GetData("/", false, null);
-                    Assert.Fail("validate auth");
+                    Assert.True(false,"validate auth");
                 }
                 catch (KeeperException.NoAuthException)
                 {
@@ -51,7 +52,7 @@
                 try
                 {
                     zk.Create(path, null, Ids.CREATOR_ALL_ACL, CreateMode.Persistent);
-                    Assert.Fail("validate auth");
+                    Assert.True(false,"validate auth");
                 }
                 catch (KeeperException.InvalidACLException)
                 {
@@ -62,7 +63,7 @@
                 {
                     zk.Create(path, null, Ids.CREATOR_ALL_ACL,
                               CreateMode.Persistent);
-                    Assert.Fail("validate auth");
+                    Assert.True(false,"validate auth");
                 }
                 catch (KeeperException.NoAuthException)
                 {
@@ -86,7 +87,7 @@
                 try
                 {
                     zk.Create(path, null, Ids.CREATOR_ALL_ACL, CreateMode.Persistent);
-                    Assert.Fail("validate auth");
+                    Assert.True(false,"validate auth");
                 }
                 catch (KeeperException.InvalidACLException)
                 {

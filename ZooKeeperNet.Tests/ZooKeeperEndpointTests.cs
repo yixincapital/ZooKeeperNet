@@ -15,6 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+using Xunit;
+
 namespace ZooKeeperNet.Tests
 {
     using System;
@@ -22,10 +25,8 @@ namespace ZooKeeperNet.Tests
     using System.Threading;
     using System.Collections.Generic;
     using log4net;
-    using NUnit.Framework;
     using Org.Apache.Zookeeper.Data;
 
-    [TestFixture]
     public class ZooKeeperEndPointTests : AbstractZooKeeperTests
     {
         private const int port = 2181;
@@ -34,16 +35,15 @@ namespace ZooKeeperNet.Tests
         private readonly List<string> ips = new List<string>{"1.1.1.1", "1.1.1.2", "1.1.1.3", "1.1.1.4", "1.1.1.5"};
         private readonly ILog LOG = LogManager.GetLogger(typeof(ZooKeeperEndPointTests));
         private ZooKeeperEndpoints zkEndpoints = null;
-
-        [SetUp]
-        public void Init()
+     
+        public ZooKeeperEndPointTests()
         {
             //create endpoints
             zkEndpoints = new ZooKeeperEndpoints(ips.ConvertAll(x => IPAddress.Parse(x))
                 .ConvertAll(y => new IPEndPoint(y, port)));
         }
 
-        [Test]
+        [Fact]
         public void testBackoff() 
         {
             List<int> expectedBackoff = new List<int>{1,1,3,7,15,31,63,127,255,511};
@@ -58,12 +58,12 @@ namespace ZooKeeperNet.Tests
                 nextAvailable = ZooKeeperEndpoint.GetNextAvailability(nextAvailable, defaultbackoffInterval, i);
                 backoff = nextAvailable - lastAvailable;
                 totalMinutes = (int)backoff.TotalMinutes;
-                Assert.AreEqual(expectedBackoff[i - 1], totalMinutes);
+                Assert.Equal(expectedBackoff[i - 1], totalMinutes);
             }
         }
 
 
-        [Test]
+        [Fact]
         public void testConnectionRetry()
         {
             //set all to failure
@@ -75,10 +75,10 @@ namespace ZooKeeperNet.Tests
 
             zkEndpoints.GetNextAvailableEndpoint();
             //verify that we've cycled back to the first connection
-            Assert.AreEqual(ips[4], zkEndpoints.CurrentEndPoint.ServerAddress.Address.ToString());
+            Assert.Equal(ips[4], zkEndpoints.CurrentEndPoint.ServerAddress.Address.ToString());
             
             //verify verify this connection is available
-            Assert.AreEqual(DateTime.MinValue, zkEndpoints.CurrentEndPoint.NextAvailability);
+            Assert.Equal(DateTime.MinValue, zkEndpoints.CurrentEndPoint.NextAvailability);
             
             //call succeeded
             zkEndpoints.CurrentEndPoint.SetAsSuccess();
@@ -87,7 +87,7 @@ namespace ZooKeeperNet.Tests
             for (int i = 0; i <= (ips.Count * 2); i++)
             {
                 zkEndpoints.GetNextAvailableEndpoint();
-                Assert.AreEqual(ips[4], zkEndpoints.CurrentEndPoint.ServerAddress.Address.ToString());
+                Assert.Equal(ips[4], zkEndpoints.CurrentEndPoint.ServerAddress.Address.ToString());
             }
 
             //set all back to success
@@ -95,11 +95,11 @@ namespace ZooKeeperNet.Tests
             {
                 zkEndpoints.GetNextAvailableEndpoint();
                 zkEndpoints.CurrentEndPoint.SetAsSuccess();
-                Assert.AreEqual(DateTime.MinValue, zkEndpoints.CurrentEndPoint.NextAvailability);
+                Assert.Equal(DateTime.MinValue, zkEndpoints.CurrentEndPoint.NextAvailability);
             }
         }
         
-        [Test, Explicit]
+        [Fact]
         public void testBackoffExpiration()
         {
             //set all to failure
@@ -117,16 +117,16 @@ namespace ZooKeeperNet.Tests
                 if (DateTime.UtcNow > backoffTime)
                 {
                     //when the backoff ends we should cycle back to the first connection
-                    Assert.AreEqual(ips[0], zkEndpoints.CurrentEndPoint.ServerAddress.Address.ToString());
+                    Assert.Equal(ips[0], zkEndpoints.CurrentEndPoint.ServerAddress.Address.ToString());
                     break;
                 }
                 //This should be the only connection attempted during the backoff
-                Assert.AreEqual(ips[4], zkEndpoints.CurrentEndPoint.ServerAddress.Address.ToString());
+                Assert.Equal(ips[4], zkEndpoints.CurrentEndPoint.ServerAddress.Address.ToString());
                 Thread.Sleep(500);
             } while (1 == 1);
         }
 
-        [Test, Explicit]
+        [Fact]
         public void testOutageRecovery()
         {
             //set all to failure
@@ -146,7 +146,7 @@ namespace ZooKeeperNet.Tests
                 {
                     foreach (ZooKeeperEndpoint z in zkEndpoints)
                     {
-                        Assert.AreEqual(z.NextAvailability, DateTime.MinValue);
+                        Assert.Equal(z.NextAvailability, DateTime.MinValue);
                     }
                     break;
                 }

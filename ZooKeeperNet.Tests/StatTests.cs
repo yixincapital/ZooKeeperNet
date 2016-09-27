@@ -15,26 +15,25 @@
  *  limitations under the License.
  *
  */
+
+using Xunit;
+
 namespace ZooKeeperNet.Tests
 {
     using System;
-    using NUnit.Framework;
     using Org.Apache.Zookeeper.Data;
     using System.Threading;
 
-    [TestFixture]
     public class StatTests : AbstractZooKeeperTests
     {
         private ZooKeeper zk;
 
-        [SetUp]
-        public void SetUp()
+        public  StatTests()
         {
             zk = CreateClient();
         }
-
-        [TearDown]
-        public void TearDown()
+  
+         void Dispose()
         {
             zk.Dispose();
         }
@@ -64,7 +63,7 @@ namespace ZooKeeperNet.Tests
             return stat;
         }
 
-        [Test]
+        [Fact]
         public void testBasic()
         {
             string name = "/" + Guid.NewGuid() + "foo";
@@ -75,18 +74,18 @@ namespace ZooKeeperNet.Tests
             stat = newStat();
             zk.GetData(name, false, stat);
 
-            Assert.AreEqual(stat.Czxid, stat.Mzxid);
-            Assert.AreEqual(stat.Czxid, stat.Pzxid);
-            Assert.AreEqual(stat.Ctime, stat.Mtime);
-            Assert.AreEqual(0, stat.Cversion);
-            Assert.AreEqual(0, stat.Version);
-            Assert.AreEqual(0, stat.Aversion);
-            Assert.AreEqual(0, stat.EphemeralOwner);
-            Assert.AreEqual(name.Length, stat.DataLength);
-            Assert.AreEqual(0, stat.NumChildren);
+            Assert.Equal(stat.Czxid, stat.Mzxid);
+            Assert.Equal(stat.Czxid, stat.Pzxid);
+            Assert.Equal(stat.Ctime, stat.Mtime);
+            Assert.Equal(0, stat.Cversion);
+            Assert.Equal(0, stat.Version);
+            Assert.Equal(0, stat.Aversion);
+            Assert.Equal(0, stat.EphemeralOwner);
+            Assert.Equal(name.Length, stat.DataLength);
+            Assert.Equal(0, stat.NumChildren);
         }
 
-        [Test]
+        [Fact]
         public void testChild()
         {
             string name = "/" + Guid.NewGuid() + "foo";
@@ -102,31 +101,31 @@ namespace ZooKeeperNet.Tests
             stat = newStat();
             zk.GetData(name, false, stat);
 
-            Assert.AreEqual(stat.Czxid, stat.Mzxid);
-            Assert.AreEqual(stat.Czxid + 1, stat.Pzxid);
-            Assert.AreEqual(stat.Ctime, stat.Mtime);
-            Assert.AreEqual(1, stat.Cversion);
-            Assert.AreEqual(0, stat.Version);
-            Assert.AreEqual(0, stat.Aversion);
-            Assert.AreEqual(0, stat.EphemeralOwner);
-            Assert.AreEqual(name.Length, stat.DataLength);
-            Assert.AreEqual(1, stat.NumChildren);
+            Assert.Equal(stat.Czxid, stat.Mzxid);
+            Assert.Equal(stat.Czxid + 1, stat.Pzxid);
+            Assert.Equal(stat.Ctime, stat.Mtime);
+            Assert.Equal(1, stat.Cversion);
+            Assert.Equal(0, stat.Version);
+            Assert.Equal(0, stat.Aversion);
+            Assert.Equal(0, stat.EphemeralOwner);
+            Assert.Equal(name.Length, stat.DataLength);
+            Assert.Equal(1, stat.NumChildren);
 
             stat = newStat();
             zk.GetData(childname, false, stat);
 
-            Assert.AreEqual(stat.Czxid, stat.Mzxid);
-            Assert.AreEqual(stat.Czxid, stat.Pzxid);
-            Assert.AreEqual(stat.Ctime, stat.Mtime);
-            Assert.AreEqual(0, stat.Cversion);
-            Assert.AreEqual(0, stat.Version);
-            Assert.AreEqual(0, stat.Aversion);
-            Assert.AreEqual(zk.SessionId, stat.EphemeralOwner);
-            Assert.AreEqual(childname.Length, stat.DataLength);
-            Assert.AreEqual(0, stat.NumChildren);
+            Assert.Equal(stat.Czxid, stat.Mzxid);
+            Assert.Equal(stat.Czxid, stat.Pzxid);
+            Assert.Equal(stat.Ctime, stat.Mtime);
+            Assert.Equal(0, stat.Cversion);
+            Assert.Equal(0, stat.Version);
+            Assert.Equal(0, stat.Aversion);
+            Assert.Equal(zk.SessionId, stat.EphemeralOwner);
+            Assert.Equal(childname.Length, stat.DataLength);
+            Assert.Equal(0, stat.NumChildren);
         }
 
-        [Test]
+        [Fact]
         public void testChildren()
         {
             string name = "/" + Guid.NewGuid() + "foo";
@@ -143,19 +142,19 @@ namespace ZooKeeperNet.Tests
                 stat = newStat();
                 zk.GetData(name, false, stat);
 
-                Assert.AreEqual(stat.Czxid, stat.Mzxid);
-                Assert.AreEqual(stat.Czxid + i + 1, stat.Pzxid);
-                Assert.AreEqual(stat.Ctime, stat.Mtime);
-                Assert.AreEqual(i + 1, stat.Cversion);
-                Assert.AreEqual(0, stat.Version);
-                Assert.AreEqual(0, stat.Aversion);
-                Assert.AreEqual(0, stat.EphemeralOwner);
-                Assert.AreEqual(name.Length, stat.DataLength);
-                Assert.AreEqual(i + 1, stat.NumChildren);
+                Assert.Equal(stat.Czxid, stat.Mzxid);
+                Assert.Equal(stat.Czxid + i + 1, stat.Pzxid);
+                Assert.Equal(stat.Ctime, stat.Mtime);
+                Assert.Equal(i + 1, stat.Cversion);
+                Assert.Equal(0, stat.Version);
+                Assert.Equal(0, stat.Aversion);
+                Assert.Equal(0, stat.EphemeralOwner);
+                Assert.Equal(name.Length, stat.DataLength);
+                Assert.Equal(i + 1, stat.NumChildren);
             }
         }
 
-        [Test]
+        [Fact]
         public void testDataSizeChange()
         {
             string name = "/" + Guid.NewGuid() + "foo";
@@ -166,33 +165,33 @@ namespace ZooKeeperNet.Tests
             stat = newStat();
             zk.GetData(name, false, stat);
 
-            Assert.AreEqual(stat.Czxid, stat.Mzxid);
-            Assert.AreEqual(stat.Czxid, stat.Pzxid);
-            Assert.AreEqual(stat.Ctime, stat.Mtime);
-            Assert.AreEqual(0, stat.Cversion);
-            Assert.AreEqual(0, stat.Version);
-            Assert.AreEqual(0, stat.Aversion);
-            Assert.AreEqual(0, stat.EphemeralOwner);
-            Assert.AreEqual(name.Length, stat.DataLength);
-            Assert.AreEqual(0, stat.NumChildren);
+            Assert.Equal(stat.Czxid, stat.Mzxid);
+            Assert.Equal(stat.Czxid, stat.Pzxid);
+            Assert.Equal(stat.Ctime, stat.Mtime);
+            Assert.Equal(0, stat.Cversion);
+            Assert.Equal(0, stat.Version);
+            Assert.Equal(0, stat.Aversion);
+            Assert.Equal(0, stat.EphemeralOwner);
+            Assert.Equal(name.Length, stat.DataLength);
+            Assert.Equal(0, stat.NumChildren);
 
             zk.SetData(name, (name + name).GetBytes(), -1);
 
             stat = newStat();
             zk.GetData(name, false, stat);
 
-            Assert.AreNotSame(stat.Czxid, stat.Mzxid);
-            Assert.AreEqual(stat.Czxid, stat.Pzxid);
-            Assert.AreNotSame(stat.Ctime, stat.Mtime);
-            Assert.AreEqual(0, stat.Cversion);
-            Assert.AreEqual(1, stat.Version);
-            Assert.AreEqual(0, stat.Aversion);
-            Assert.AreEqual(0, stat.EphemeralOwner);
-            Assert.AreEqual(name.Length * 2, stat.DataLength);
-            Assert.AreEqual(0, stat.NumChildren);
+            Assert.Same(stat.Czxid, stat.Mzxid);
+            Assert.Equal(stat.Czxid, stat.Pzxid);
+            Assert.NotSame(stat.Ctime, stat.Mtime);
+            Assert.Equal(0, stat.Cversion);
+            Assert.Equal(1, stat.Version);
+            Assert.Equal(0, stat.Aversion);
+            Assert.Equal(0, stat.EphemeralOwner);
+            Assert.Equal(name.Length * 2, stat.DataLength);
+            Assert.Equal(0, stat.NumChildren);
         }
 
-        [Test]
+        [Fact]
         public void testDeleteAllNodeExceptPraweda()
         {
             DeleteChild(zk, "/");

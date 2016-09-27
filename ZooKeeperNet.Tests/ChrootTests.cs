@@ -15,14 +15,17 @@
  *  limitations under the License.
  *
  */
+
+using Xunit;
+
 namespace ZooKeeperNet.Tests
 {
     using System;
     using System.Diagnostics;
     using System.Text;
-    using NUnit.Framework;
 
-    [TestFixture]
+
+
     public class ChrootTests : AbstractZooKeeperTests
     {
         private class MyWatcher : IWatcher
@@ -56,25 +59,25 @@ namespace ZooKeeperNet.Tests
             {
                 if (!latch.Await(CONNECTION_TIMEOUT))
                 {
-                    Assert.Fail("No watch received within timeout period " + path);
+                    Assert.True(false,"No watch received within timeout period " + path);
                 }
                 return path.Equals(eventPath);
             }
         }
 
-        [Test]
+        [Fact]
         public void testChrootSynchronous()
         {
             string ch1 = "/" + Guid.NewGuid() + "ch1";
             using (ZooKeeper zk1 = CreateClient())
             {
-                Assert.AreEqual(ch1, zk1.Create(ch1, null, Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent));
+                Assert.Equal(ch1, zk1.Create(ch1, null, Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent));
             }
 
             string ch2 = "/" + Guid.NewGuid() + "ch2";
             using (ZooKeeper zk2 = CreateClient(ch1))
             {
-                Assert.AreEqual(ch2, zk2.Create(ch2, null, Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent));
+                Assert.Equal(ch2, zk2.Create(ch2, null, Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent));
             }
 
             using (ZooKeeper zk1 = CreateClient())
@@ -113,12 +116,12 @@ namespace ZooKeeperNet.Tests
                 }
                 catch (KeeperException.NoNodeException e)
                 {
-                    Assert.AreEqual(ch3, e.Path);
+                    Assert.Equal(ch3, e.Path);
                 }
 
-                Assert.AreEqual("1".GetBytes(), zk1.GetData(ch1, false, null));
-                Assert.AreEqual("2".GetBytes(), zk1.GetData(ch1Ch2, false, null));
-                Assert.AreEqual("2".GetBytes(), zk2.GetData(ch2, false, null));
+                Assert.Equal("1".GetBytes(), zk1.GetData(ch1, false, null));
+                Assert.Equal("2".GetBytes(), zk1.GetData(ch1Ch2, false, null));
+                Assert.Equal("2".GetBytes(), zk2.GetData(ch2, false, null));
 
                 // check delete
                 zk2.Delete(ch2, -1);

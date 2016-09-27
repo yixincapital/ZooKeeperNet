@@ -1,25 +1,25 @@
-﻿namespace ZooKeeperNet.Tests
+﻿using Xunit;
+
+namespace ZooKeeperNet.Tests
 {
     using System;
     using System.Linq;
-    using NUnit.Framework;
 
-    [TestFixture]
     public class SocketTests : AbstractZooKeeperTests
     {
-        [Test]
+        [Fact]
         public void CanReadAndWriteOverASingleFrame()
         {
             SendBigByteArray(10000);
         }
 
-        [Test]
+     [Fact]
         public void CanReadAndWriteOverTwoFrames()
         {
             SendBigByteArray(20000);
         }
 
-        [Test]
+     [Fact]
         public void CanReadAndWriteOverManyFrames()
         {
             SendBigByteArray(100000);
@@ -39,7 +39,7 @@
                 client.Create(node, b, Ids.OPEN_ACL_UNSAFE, CreateMode.Persistent);
 
                 var received = client.GetData(node, false, null);
-                CollectionAssert.AreEqual(b, received);
+                Assert.Equal(b, received);
             }
         }
     }
